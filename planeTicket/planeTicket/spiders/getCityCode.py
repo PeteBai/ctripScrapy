@@ -1,5 +1,6 @@
 class city():
     cityDict = dict()
+    popularCity = dict()
     def __init__(self):
         super().__init__()
         self.cityDict = {
@@ -40,6 +41,34 @@ class city():
             '扬州': 'YTY', '玉树': 'YUS', '岳阳': 'YYA', '郑州': 'CGO', '张家界': 'DYG', '芷江': 'HJJ', '舟山': 'HSN', '扎兰屯': 'NZL',
             '张掖': 'YZY', '昭通': 'ZAT', '湛江': 'ZHA', '中卫': 'ZHY', '张家口': 'ZQZ', '珠海': 'ZUH', '遵义': 'ZYI',
         }
+        self.popularCity = {
+            '澳门': 'MFM',
+            '北京': 'BJS',
+            '北京(南苑机场)': 'NAY', '北京(首都国际机场)': 'PEK',
+            '长春': 'CGQ',
+            '重庆': 'CKG', '长沙': 'CSX', '成都': 'CTU', 
+            '大连': 'DLC', 
+            '福州': 'FOC', 
+            '广州': 'CAN', '高雄': 'KHH', '贵阳': 'KWE',
+            '桂林': 'KWL', '海口': 'HAK', '呼和浩特': 'HET', '合肥': 'HFE',
+            '杭州': 'HGH', '哈尔滨': 'HRB', 
+            '济南': 'TNA',
+            '昆明': 'KMG',
+            '兰州': 'LHW', 
+            '拉萨': 'LXA', 
+            '南昌': 'KHN', '南京': 'NKG',
+            '南宁': 'NNG', 
+            '泉州': 'JJN', '青岛': 'TAO' ,
+            '上海': 'SHA', '上海(浦东国际机场)': 'PVG', '上海(虹桥国际机场)': 'SHA', '沈阳': 'SHE',
+            '石家庄': 'SJW', '三亚': 'SYX', '深圳': 'SZX', 
+            '台北': 'TPE', '天津': 'TSN',
+            '太原': 'TYN', '乌鲁木齐': 'URC',
+            '温州': 'WNZ', '武汉': 'WUH', '无锡': 'WUX', 
+            '香港': 'HKG', '西安': 'SIA', 
+            '厦门': 'XMN', '西宁': 'XNN', 
+            '银川': 'INC', 
+            '扬州': 'YTY', '郑州': 'CGO', '珠海': 'ZUH'
+        }
     def getCityByName(self, name):
         code = self.cityDict[name]
         if type(code) != None:
@@ -57,7 +86,7 @@ class city():
 
     def getAllCode(self):
         code = []
-        for value in self.cityDict.values():
+        for value in self.popularCity.values():
             code.append(value)
         return code
 

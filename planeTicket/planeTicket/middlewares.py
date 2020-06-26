@@ -41,7 +41,8 @@ class PlaneticketSpiderMiddleware:
 
         # Should return either None or an iterable of Request, dict
         # or Item objects.
-        pass
+        if isinstance(exception,TimeoutError):
+            return request
 
     def process_start_requests(self, start_requests, spider):
         # Called with the start requests of the spider, and works

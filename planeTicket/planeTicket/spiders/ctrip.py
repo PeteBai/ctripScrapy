@@ -4,7 +4,10 @@ from scrapy.spiders import CrawlSpider
 from scrapy.selector import Selector
 from scrapy import cmdline
 import time
+import datetime
+import random
 from getCityCode import city
+import antiScrapy
 import json
 import requests
 import sys
@@ -14,38 +17,47 @@ from items import PlaneticketItem
 class ctripSpider(CrawlSpider):
     name = 'ctrip'
     allowed_domains = ['flights.ctrip.com']
+    lastPayLoad = {}
+    lastHeaders = {}
     def start_requests(self):
         cities = city()
         baseUrl = "https://flights.ctrip.com/itinerary/api/12808/products"
         cityCodes = cities.getAllCode()
-        print("kk")
-        city1 = "CGO"
-        city2 = "ZUH"
-        date = "2020-06-26"
-        headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0",
-        "referer": "https://flights.ctrip.com/itinerary/oneway/" + city1 + "-" + city2 + "?date=" + date,
-        "Content-Type": "application/json"
-        }
-        req_payload = {
-            "flightWay": "Oneway",
-            "classType": "ALL",
-            "hasChild": "False",
-            "hasBaby": "False",
-            "searchIndex": 1,
-            "airportParams": [
-                {"dcity": city1, 
-                "acity": city2, 
-                "dcityname": cities.getNameByCode(city1), 
-                "acityname": cities.getNameByCode(city2), 
-                "date": date}]
-        }
-        yield scrapy.Request(method='POST', url=baseUrl, headers=headers, body=json.dumps(req_payload), callback=self.parse)
+        date = str(datetime.date.today())
+        for dept in cityCodes:
+            for arrv in cityCodes:
+                if dept != arrv:
+                    time.sleep(random.randint(1, 10))
+                    headers = {
+                        "User-Agent": antiScrapy.getRandomAgent(),
+                        "referer": "https://flights.ctrip.com/itinerary/oneway/" + dept + "-" + arrv + "?date=" + date,
+                        "Content-Type": "application/json"
+                    }
+                    req_payload = {
+                        "flightWay": "Oneway",
+                        "classType": "ALL",
+                        "hasChild": "False",
+                        "hasBaby": "False",
+                        "searchIndex": 1,
+                        "airportParams": [
+                            {"dcity": dept, 
+                            "acity": arrv, 
+                            "dcityname": cities.getNameByCode(dept), 
+                            "acityname": cities.getNameByCode(arrv), 
+                            "date": date}]
+                    }
+                    self.lastPayLoad = req_payload
+                    self.lastHeaders = headers
+                    yield scrapy.Request(method='POST', url=baseUrl, headers=headers, body=json.dumps(req_payload), callback=self.parse)
 
     def parse(self, response):
         response = response.text
         routeList = json.loads(response).get('data').get('routeList')
-        if len(routeList) == 0:
+        isRefused = json.loads(response).get('data').get('error').get('code')
+        if isRefused == "1004":
+            print("Refused. Wait to Restart.")
+        if routeList is None:
+            print("ERR")
             with open("rec.json", 'a', encoding='UTF-8') as f:
                 f.write(response)
             return
