@@ -7,6 +7,7 @@ sys.path.append("..")
 from items import PlaneticketItem
 import json
 import io
+import time
 
 def getRandomAgent():
     agents = ["Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0)",
@@ -32,27 +33,25 @@ def getRandomAgent():
     count = len(agents)
     return agents[random.randint(0,count-1)]
 
-def useSeleium(headers, reqPayLoad):
+def useSelenium(headers, reqPayLoad):
     items = dict()
     browser = webdriver.Edge()
     info = reqPayLoad['airportParams'][0]
     dept = info['dcity']
     arrv = info['acity']
     date = info['date']
-    browser.get("https://flights.ctrip.com/itinerary/oneway/"+dept+"-"+arrv+"?date="+date)
-    try:
-        #click = browser.find_element_by_css_selector("a.button")
-        #actions = ActionChains(browser)
-        #actions.click(click)
-        #actions.perform()
-        pass
-    finally:
-        pass
-    airRoute = browser.find_elements_by_css_selector("div[class~='flight_logo']")
-    aircrafts = browser.find_elements_by_css_selector("span[class~='direction_black_border']")
-    airports = browser.find_elements_by_css_selector("div[class~='airport']")
-    times = browser.find_elements_by_css_selector("strong[class~='time']")
-    prices = browser.find_elements_by_css_selector("div[class~='child_price']>div>span")
+    airRoute = []
+    checkCount = 0
+    while len(airRoute) == 0 and checkCount <= 2:
+        browser.get("https://flights.ctrip.com/itinerary/oneway/"+dept+"-"+arrv+"?date="+date)
+        airRoute = browser.find_elements_by_css_selector("div[class~='flight_logo']")
+        aircrafts = browser.find_elements_by_css_selector("span[class~='direction_black_border']")
+        airports = browser.find_elements_by_css_selector("div[class~='airport']")
+        times = browser.find_elements_by_css_selector("strong[class~='time']")
+        prices = browser.find_elements_by_css_selector("div[class~='child_price']>div>span")
+        checkCount = checkCount + 1
+        if len(airRoute) == 0:
+            time.sleep(60)
     #print(elems)
     items['airCompany'] = []
     items['airFlightNumber'] = []
@@ -112,6 +111,7 @@ def useSeleium(headers, reqPayLoad):
     browser.close()
     with open("test.json", "ab+") as f:
         f.write(json.dumps(items, ensure_ascii=False).encode('gb2312'))
+    return items
 
 if __name__ == "__main__":
     #print(getRandomAgent())
@@ -134,4 +134,4 @@ if __name__ == "__main__":
             "acityname": cities.getNameByCode('CAN'), 
             "date": '2020-06-26'}]
     }
-    useSeleium(headers, req_payload)
+    useSelenium(headers, req_payload)
