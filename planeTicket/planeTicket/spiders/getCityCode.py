@@ -43,12 +43,11 @@ class city():
         }
         self.popularCity = {
             '北京': 'BJS',
-            '北京(南苑机场)': 'NAY', '北京(首都国际机场)': 'PEK',
             '长春': 'CGQ',
             '重庆': 'CKG', '长沙': 'CSX', '成都': 'CTU', 
             '大连': 'DLC', 
             '福州': 'FOC', 
-            '广州': 'CAN', '高雄': 'KHH', '贵阳': 'KWE',
+            '广州': 'CAN', '贵阳': 'KWE',
             '桂林': 'KWL', '海口': 'HAK', '呼和浩特': 'HET', '合肥': 'HFE',
             '杭州': 'HGH', '哈尔滨': 'HRB', 
             '济南': 'TNA',
@@ -58,7 +57,7 @@ class city():
             '南昌': 'KHN', '南京': 'NKG',
             '南宁': 'NNG', 
             '泉州': 'JJN', '青岛': 'TAO' ,
-            '上海': 'SHA', '上海(浦东国际机场)': 'PVG', '上海(虹桥国际机场)': 'SHA', '沈阳': 'SHE',
+            '上海': 'SHA', '沈阳': 'SHE',
             '石家庄': 'SJW', '三亚': 'SYX', '深圳': 'SZX', 
             '天津': 'TSN',
             '太原': 'TYN', '乌鲁木齐': 'URC',
@@ -88,6 +87,12 @@ class city():
         for value in self.popularCity.values():
             code.append(value)
         return code
+
+    def getAllName(self):
+        name = []
+        for key in self.popularCity.keys():
+            name.append(key)
+        return name
 
 if __name__ == "__main__":
     c = city()

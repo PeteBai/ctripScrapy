@@ -23,3 +23,5 @@ class PlaneticketPipeline:
     def process_item(self, item, spider=None):
         self.jsonLinesItemExporter.export_item(item)
         return item
+
+
